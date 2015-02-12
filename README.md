@@ -1,11 +1,15 @@
-Avoirdupois
+AvoiRMLdupois
 ===========
 
-Point of interest (POI) provider for the augmented reality viewer [Layar](http://www.layar.com/).
+ARML-providing Point of interest (POI) server.
+
+## Issues
+
+There are no known ARML-using clients.  Still, we have to start somewhere.
 
 ## Requirements
 
-Avoirdupois is written in [Ruby](http://www.ruby-lang.org/en/) using the [Sinatra](http://www.sinatrarb.com/) web application framework.  It uses ActiveRecord from Ruby on Rails to talk to the database, but this will probably change.
+AvoiRMLdupois is written in [Ruby](http://www.ruby-lang.org/en/) using the [Sinatra](http://www.sinatrarb.com/) web application framework.  It uses ActiveRecord from Ruby on Rails to talk to the database, but this will probably change.
 
 You will need to have Ruby and [Rubygems](http://rubygems.org/) installed for this to work.  You can either do that through a package manager or by using [RVM](https://rvm.io/), which is probably easiest in the long run and will help you avoid problems with different Ruby versions.
 
@@ -29,15 +33,15 @@ All of these installation commands are meant for Debian/Ubuntu; adapt them to yo
 
 ### The source code
 
-To install Avoirdupois you need to get this source code by either forking this GitHub repository or downloading it directly.  This will clone the repository, download all the files, and show what's there:
+To install AvoiRMLdupois you need to get this source code by either forking this GitHub repository or downloading it directly.  This will clone the repository, download all the files, and show what's there:
 
-    $ git clone git@github.com:wdenton/avoirdupois.git
-    $ cd avoirdupois
+    $ git clone git@github.com:wdenton/avoirmldupois.git
+    $ cd avoirmldupois
     $ ls
 
 ### Setting up databases
 
-Before going any further you need to set up the databases Avoirdupois will use.  The configuration details are in [config/database.yml](config/database.yml).
+Before going any further you need to set up the databases AvoiRMLdupois will use.  The configuration details are in [config/database.yml](config/database.yml).
 
 	# cp config/database.yml.sample config/database.yml
 
@@ -124,7 +128,7 @@ If you installed `jsonlint` then this will make the output more readable:
           },
         [ ... and a lot more ... ]
 
-That simple request is how Layar will get points of interest from Avoirdupois. Layar passes in more variables, but the core are:
+That simple request is how Layar will get points of interest from AvoiRMLdupois. Layar passes in more variables, but the core are:
 
 * layerName: the name of the layer
 * lon: longitude of user
@@ -136,7 +140,7 @@ That simple request is how Layar will get points of interest from Avoirdupois. L
 
 Layers can have checkboxes that let the user filter POIs by type. [checkbox-sample.geojson](loaders/sample/checkbox-sample.geojson) is the same as the basic sample file but adds categories to the POIs: museums can be "northerly," "southerly," or "house."
 
-    $ ./loaders/loader.rb loaders/sample/checkbox-sample.geojson 
+    $ ./loaders/loader.rb loaders/sample/checkbox-sample.geojson
     Creating checkboxsample ...
     Gardiner Museum
       Action: Web site
@@ -208,7 +212,7 @@ Another way is to use ActiveRecord to construct POI objects and save them. This 
 
 ## Putting into production
 
-Avoirdupois uses [Rack](http://rack.github.io/), so it can be deployed with [Phusion Passenger](https://www.phusionpassenger.com/) or however else you like to deploy such applications.  I do it with this:
+AvoiRMLdupois uses [Rack](http://rack.github.io/), so it can be deployed with [Phusion Passenger](https://www.phusionpassenger.com/) or however else you like to deploy such applications.  I do it with this:
 
     <VirtualHost *:80>
         ServerName avoirdupois.miskatonic.org
@@ -222,7 +226,7 @@ Avoirdupois uses [Rack](http://rack.github.io/), so it can be deployed with [Phu
         LogLevel debug
         CustomLog ${APACHE_LOG_DIR}/avoirdupois.access.log combined
     </VirtualHost>
-    
+
 Then, as before:
 
 * Set up database (layer_production)
