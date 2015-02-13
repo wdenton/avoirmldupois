@@ -1,10 +1,9 @@
 # Development database
-create database layer_development;
-create user 'layer'@'localhost' identified by 'PASSWORD'; 
-grant all privileges on layer_development.* to 'layer'@'localhost';
+create database avoirmldupois_dev;
+create user 'avoirmldupois'@'localhost' identified by 'pois';
+grant all privileges on avoirmldupois_dev.* to 'avoirmldupois'@'localhost';
 
-# Uncommnt this when seting up production database
-# create database layer_production;
-# create user 'layer'@'localhost' identified by 'PASSWORD'; 
-# grant all privileges on layer_production.* to 'layer'@'localhost';
-
+# Uncommnt this when seting up production database. But change the password!
+# create database avoirmldupois;
+# create user 'avoirmldupois'@'localhost' identified by 'pois';
+# grant all privileges on avoirmldupois.* to 'avoirmldupois'@'localhost';

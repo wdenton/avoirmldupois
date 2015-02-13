@@ -45,7 +45,11 @@ Before going any further you need to set up the databases AvoiRMLdupois will use
 
 	# cp config/database.yml.sample config/database.yml
 
-Set up at least the `layer_development` database and put the login information into the config file.  Then run:
+Set up at least the `avoirmldupois_dev` database and put the login information into the config file.  You can do this with:
+
+    # mysql -u root -p < create-database.sql
+
+Then run:
 
     # ./initialize.rb
 

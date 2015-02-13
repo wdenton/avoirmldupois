@@ -20,6 +20,7 @@
 require 'rubygems'
 require 'active_record'
 require 'mysql2'
+require 'yaml'
 
 this_directory = File.dirname(__FILE__)
 
