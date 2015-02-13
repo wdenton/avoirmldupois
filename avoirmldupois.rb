@@ -1,32 +1,21 @@
 #!/usr/bin/env ruby
 
-# This file is part of Avoirdupois.
+# This file is part of AvoiRMLdupois.
 #
-# Avoirdupois is free software: you can redistribute it and/or modify
+# AvoiRMLdupois is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Avoirdupois is distributed in the hope that it will be useful,
+# AvoiRMLdupois is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Avoirdupois.  If not, see <http://www.gnu.org/licenses/>.
+# along with AvoiRMLdupois.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Copyright 2012, 2013 William Denton
-
-# http://stackoverflow.com/questions/777724/whats-the-best-way-to-talk-to-a-database-while-using-sinatra/786958#786958
-
-# If I moved to DataMapper:
-# http://stackoverflow.com/questions/13522912/how-to-add-a-method-in-datamapper-so-i-can-find-all-points-within-x-distance-of
-#
-# And http://stackoverflow.com/questions/14740195/destroying-dependents-in-datamapper
-
-# my_way
-# Sample Sinatra app
-# https://github.com/mikker/my_way
+# Copyright 2012, 2013, 2014, 2015 William Denton
 
 require 'rubygems'
 require 'bundler/setup'
@@ -40,8 +29,6 @@ require 'sinatra'
 require 'active_record'
 require 'mysql2'
 require 'yaml'
-
-# Sinatra template app: https://github.com/mikker/my_way
 
 dbconfig = YAML::load(File.open('config/database.yml'))[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
 ActiveRecord::Base.establish_connection(dbconfig)
@@ -334,5 +321,5 @@ end
 
 get "/*" do
   content_type "text/plain"
-  "You need to supply parameters to find POIs for Layar.  See https://github.com/wdenton/avoirdupois"
+  "No parameters specified.  See https://github.com/wdenton/avoirmldupois"
 end
