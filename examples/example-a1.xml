@@ -1,0 +1,64 @@
+<arml>
+  <ARElements>
+    <!-- define the placemark marker; we use custom scaling mode to allow
+	 markers to be visible from further away markers will appear 20 meters wide
+	 as a maximum in the composed scene. The Image will be used by each
+	 Placemark in the scene. -->
+    <Image id="placemarkMarker">
+      <ScalingMode type="custom">
+	<minScalingDistance>10</minScalingDistance>
+	<maxScalingDistance>1000</maxScalingDistance>
+	<scalingFactor>0.4</scalingFactor>
+      </ScalingMode>
+      <width>20</width>
+      <href xlink:href="http://www.myserver.com/myImage.jpg" />
+    </Image>
+    <!-- define the info window. The info window is located at the bottom of
+	 the screen and displays the name and description of the Feature it is
+	 attached to. It will only be visible when the particular Feature
+	 (placemark) was selected, and will disappear as soon as the Feature is
+	 unselected. The Anchor will be used by each Placemark in the scene. -->
+    <ScreenAnchor id="infoWindow">
+      <style>left: 0; width: 100%; bottom: 0; height: 25%</style>
+      <assets>
+	<Label>
+	  <conditions>
+	    <SelectedCondition>
+	      <listener>feature</listener>
+	      <selected>true</selected>
+	    </SelectedCondition>
+	  </conditions>
+	  <src><b>$[name]</b><br />$[description]</src>
+	</Label>
+      </assets>
+    </ScreenAnchor>
+    <!-- Golden Gate Placemark -->
+    <Feature id="goldenGateBridge">
+      <name>Golden Gate Bridge</name>
+      <description>The Golden Gate Bridge is a suspension bridge spanning the Golden Gate, the opening of the San Francisco Bay into the Pacific Ocean.</description>
+      <anchors>
+	<anchorRef xlink:href="#infoWindow" />
+	<Geometry>
+	  <assets><assetRef xlink:href="#placemarkMarker" /></assets>
+	  <gml:Point gml:id="myPoint">
+	    <gml:pos>37.818599 -122.478511</gml:pos>
+	  </gml:Point>
+	</Geometry>
+      </anchors>
+    </Feature>
+    <!-- Coit Tower Placemark -->
+    <Feature id="coitTower">
+      <name>Coit Tower</name>
+      <description>Coit Tower, also known as the Lillian Coit Memorial Tower, is a 210-foot (64 m) tower in the Telegraph Hill neighborhood of San Francisco, California.</description>
+      <anchors>
+	<anchorRef xlink:href="#infoWindow" />
+	<Geometry>
+	  <assets><assetRef xlink:href="#placemarkMarker" /></assets>
+	  <gml:Point gml:id="myPoint">
+	    <gml:pos>37.802494 -122.405727</gml:pos>
+	  </gml:Point>
+	</Geometry>
+      </anchors>
+    </Feature>
+  </ARElements>
+</arml>
