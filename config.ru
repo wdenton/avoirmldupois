@@ -10,5 +10,5 @@ end
 set :environment, ENV['RACK_ENV'].to_sym
 disable :run, :reload
 
-require './avoirdupois.rb'
+require './avoirmldupois.rb'
 run Sinatra::Application

@@ -219,21 +219,21 @@ Another way is to use ActiveRecord to construct POI objects and save them. This 
 AvoiRMLdupois uses [Rack](http://rack.github.io/), so it can be deployed with [Phusion Passenger](https://www.phusionpassenger.com/) or however else you like to deploy such applications.  I do it with this:
 
     <VirtualHost *:80>
-        ServerName avoirdupois.miskatonic.org
-        DocumentRoot /var/www/avoirdupois.miskatonic.org/avoirdupois/public
+        ServerName avoirmldupois.miskatonic.org
+        DocumentRoot /var/www/avoirmldupois.miskatonic.org/avoirmldupois/public
         SetEnv RACK_ENV production
-        <Directory /var/www/avoirdupois.miskatonic.org/avoirdupois>
+        <Directory /var/www/avoirmldupois.miskatonic.org/avoirmldupois>
             Allow from all
             Options -MultiViews
         </Directory>
-        ErrorLog ${APACHE_LOG_DIR}/avoirdupois.error.log
+        ErrorLog ${APACHE_LOG_DIR}/avoirmldupois.error.log
         LogLevel debug
-        CustomLog ${APACHE_LOG_DIR}/avoirdupois.access.log combined
+        CustomLog ${APACHE_LOG_DIR}/avoirmldupois.access.log combined
     </VirtualHost>
 
 Then, as before:
 
-* Set up database (layer_production)
+* Set up database (avoirmldupois)
 * Clone code as above
 * Initialize
 * Load layers
