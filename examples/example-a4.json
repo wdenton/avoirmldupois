@@ -1,0 +1,60 @@
+{
+  "arml": {
+    "ARElements": {
+      "Fill": {
+        "_attributes": {
+          "id": "myRedFill"
+        },
+        "height": "0.01",
+        "style": "color:#FF0000;"
+      },
+      "Tracker": {
+        "_attributes": {
+          "id": "defaultImageTracker"
+        },
+        "uri": {
+          "_attributes": {
+            "xlink:href": "http://opengeospatial.org/arml/tracker/genericImageTracker"
+          }
+        }
+      },
+      "Trackable": {
+        "_attributes": {
+          "id": "myTrackable"
+        },
+        "config": {
+          "tracker": {
+            "_attributes": {
+              "xlink:href": "#defaultImageTracker"
+            }
+          },
+          "src": "http://www.myserver.com/myMarker.jpg"
+        },
+        "size": "0.20"
+      },
+      "RelativeTo": {
+        "_attributes": {
+          "id": "markerOutline"
+        },
+        "assets": {
+          "assetRef": {
+            "_attributes": {
+              "xlink:href": "#myRedFill"
+            }
+          }
+        },
+        "ref": {
+          "_attributes": {
+            "xlink:href": "#myTrackable"
+          }
+        },
+        "gml:LineString": {
+          "_attributes": {
+            "gml:id": "myLineString"
+          },
+          "gml:posList": "0.01 0.02 0 0.01 -0.02 0 -0.01 -0.02 0 -0.01 0.02 0\n\t0.01 0.02 0"
+        }
+      }
+    }
+  }
+}

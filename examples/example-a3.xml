@@ -1,0 +1,22 @@
+<arml>
+  <ARElements>
+    <!-- register the Tracker to track a generic image -->
+    <Tracker id="defaultImageTracker">
+      <uri xlink:href="http://opengeospatial.org/arml/tracker/genericImageTracker" />
+    </Tracker>
+    <!-- define the artificial marker the Model will be placed on top of -->
+    <Trackable>
+      <assets>
+	<!-- define the 3D Model that should be visible on top of the marker -->
+	<Model>
+	  <href xlink:href="http://www.myserver.com/myModel.dae" />
+	</Model>
+      </assets>
+      <config>
+	<tracker xlink:href="#defaultImageTracker" />
+	<src>http://www.myserver.com/myMarker.jpg</src>
+      </config>
+      <size>0.20</size>
+    </Trackable>
+  </ARElements>
+</arml>

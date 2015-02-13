@@ -1,0 +1,36 @@
+{
+  "arml": {
+    "ARElements": {
+      "Tracker": {
+        "_attributes": {
+          "id": "defaultImageTracker"
+        },
+        "uri": {
+          "_attributes": {
+            "xlink:href": "http://opengeospatial.org/arml/tracker/genericImageTracker"
+          }
+        }
+      },
+      "Trackable": {
+        "assets": {
+          "Model": {
+            "href": {
+              "_attributes": {
+                "xlink:href": "http://www.myserver.com/myModel.dae"
+              }
+            }
+          }
+        },
+        "config": {
+          "tracker": {
+            "_attributes": {
+              "xlink:href": "#defaultImageTracker"
+            }
+          },
+          "src": "http://www.myserver.com/myMarker.jpg"
+        },
+        "size": "0.20"
+      }
+    }
+  }
+}

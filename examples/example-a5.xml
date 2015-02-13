@@ -1,0 +1,38 @@
+<arml>
+  <ARElements>
+    <!-- define the VisualAsset for the colored area -->
+    <Fill id="myRedFill">
+      <!-- define red color for the fill -->
+      <style>color:#FF0000;</style>
+    </Fill>
+    <!-- define the Tracker and the Marker (see previous example) -->
+    <Tracker id="defaultImageTracker">
+      <uri xlink:href="http://opengeospatial.org/arml/tracker/genericImageTracker" />
+    </Tracker>
+    <Trackable id="myTrackable">
+      <config>
+	<tracker xlink:href="#defaultImageTracker" />
+	<src>http://www.myserver.com/myMarker.jpg</src>
+      </config>
+      <size>0.20</size>
+    </Trackable>
+    <!-- defines the location of the area of the marker as a Polygon which has to be defined relative to the Trackable's center point -->
+    <RelativeTo id="markerOutline">
+      <assets>
+	<!-- use the Fill-VisualAsset defined above to draw the LineString -->
+	<assetRef xlink:href="#myRedFill" />
+      </assets>
+      <!-- reference the Trackable the RelativeTo-geometry will be using -->
+      <ref xlink:href="#myTrackable" />
+      <!-- define the Outline as LineString, from the top right corner of the marker, moving clockwise. The top right point is 10 centimeters to the right, 20 centimeters to the top and 0 centimeters above the Trackable's center (0.01, 0.02 and 0 meters). -->
+      <gml:Polygon gml:id="myPolygon">
+	<gml:exterior>
+	  <gml:LinearRing>
+	    <gml:posList>0.01 0.02 0 0.01 -0.02 0 -0.01 -0.02 0 -0.01 0.02
+	    0 0.01 0.02 0</gml:posList>
+	  </gml:LinearRing>
+	</gml:exterior>
+      </gml:Polygon>
+    </RelativeTo>
+  </ARElements>
+</arml>

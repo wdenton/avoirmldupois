@@ -1,0 +1,65 @@
+<arml>
+  <ARElements>
+    <Image id="placemarkMarker">
+      <conditions>
+	<DistanceCondition>
+	  <min>5000</min>
+	</DistanceCondition>
+      </conditions>
+      <ScalingMode type="custom">
+	<minScalingDistance>10</minScalingDistance>
+	<maxScalingDistance>1000</maxScalingDistance>
+	<scalingFactor>0.4</scalingFactor>
+      </ScalingMode>
+      <width>20</width>
+      <href xlink:href="http://www.myserver.com/myImage.jpg" />
+    </Image>
+    <Fill id="myRedFill">
+      <!-- only visible when 1km <= distance <= 5km -->
+      <conditions>
+	<DistanceCondition>
+	  <max>5000</max>
+	  <min>1000</min>
+	</DistanceCondition>
+      </conditions>
+      <!-- the Golden Gate Bridge is 27.4 meters wide, thus the height of the Fill (which represents the width of the Bridge) is set to 27.4 meters -->
+      <height>27.4</height>
+      <!-- red color -->
+      <style>color:#FF0000;</style>
+    </Fill>
+    <Model id="3dModel">
+      <!-- only visible when distance <= 1km -->
+      <conditions>
+	<DistanceCondition>
+	  <max>1000</max>
+	</DistanceCondition>
+      </conditions>
+      <href xlink:href="http://www.myserver.com/myModel.dae" />
+    </Model>
+    <!-- Golden Gate Placemark -->
+    <Feature id="goldenGateBridge">
+      <name>Golden Gate Bridge</name>
+      <anchors>
+	<Geometry>
+	  <assets>
+	    <!-- the model and the icon are mapped onto the same point, but shown at different distances (see the VisualAssets declaration on top for details) -->
+	    <assetRef xlink:href="#placemarkMarker" />
+	    <assetRef xlink:href="#3dModel" />
+	  </assets>
+	  <gml:Point gml:id="myPoint">
+	    <gml:pos>37.818599 -122.478511</gml:pos>
+	  </gml:Point>
+	</Geometry>
+	<Geometry>
+	  <!-- the line-representation must be mapped as a LineString Geometry -->
+	  <assets><assetRef xlink:href="#filledLine" /></assets>
+	  <gml:LineString gml:id="myLineString">
+	    <gml:posList>
+	      37.827752 -122.479541 37.811005 -122.477739
+	    </gml:posList>
+	  </gml:LineString>
+	</Geometry>
+      </anchors>
+    </Feature>
+  </ARElements>
+<arml>
