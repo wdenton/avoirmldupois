@@ -45,7 +45,7 @@ Before going any further you need to set up the databases AvoiRMLdupois will use
 
 	# cp config/database.yml.sample config/database.yml
 
-Set up at least the `avoirmldupois_dev` database and put the login information into the config file.  You can do this with:
+The defaults there match up with the basic MySQL setup script in `create-database.mysql` which sets up the `avoirmldupois_dev` database.  Run it like this:
 
     # mysql -u root -p < create-database.sql
 
