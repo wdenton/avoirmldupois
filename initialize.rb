@@ -42,27 +42,27 @@ ActiveRecord::Schema.define(:version => 001) do
     t.string     :showMessage
   end
 
-  if table_exists? "pois"
-    drop_table "pois"
+  if table_exists? "elements"
+    drop_table "elements"
   end
-  create_table "pois", :force => true do |t|
+  create_table "elements", :force => true do |t|
     t.references :channel
     # t.references :action
-    t.string     :title, :null => false
+    t.string     :name, :null => false
     t.string     :description
     t.string     :footnote
     t.float      :lat, :null=> false
     t.float      :lon, :null=> false
     t.string     :imageURL
     t.float      :alt, :default => 0
-    t.string     :poiType, :null => false, :default => "geo"
+    t.string     :elementType, :null => false, :default => "geo"
   end
 
   if table_exists? "icons"
     drop_table "icons"
   end
   create_table "icons", :force => true do |t|
-    t.references :poi
+    t.references :element
     t.string     :label
     t.string     :url, :null => false
     t.integer    :iconType, :null => false, :default => 0
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(:version => 001) do
     drop_table "actions"
   end
   create_table "actions", :force => true do |t|
-    t.references :poi
+    t.references :element
     t.string     :label, :null => false
     t.string     :uri, :null => false
     t.string     :contentType, :default => "application/vnd.layar.internal"
@@ -85,38 +85,6 @@ ActiveRecord::Schema.define(:version => 001) do
     t.boolean    :autoTrigger, :required => true, :default => false
     t.integer    :autoTriggerRange
     t.boolean    :autoTriggerOnly, :default => false
-  end
-
-  if table_exists? "ubjects"
-    drop_table "ubjects"
-  end
-  create_table "ubjects", :force => true do |t|
-    t.references :poi
-    t.string     :contentType, :null => false
-    t.string     :url, :null => false
-    t.float      :size, :null => false
-    t.string     :reducedURL
-    t.integer    :height       # Mandatory for HTML
-    t.integer    :width        # Mandatory for HTML
-    t.boolean    :scrollable   # Mandatory for HTML
-    t.boolean    :interactive  # Mandatory for HTML
-  end
-
-  if table_exists? "transforms"
-    drop_table "transforms"
-  end
-  create_table "transforms", :force => true do |t|
-    t.references :poi
-    t.boolean    :rel, :default => false
-    # t.decimal    :angle, :size => [5, 2], :default => 0.00, :null => false
-    t.integer    :angle, :null => false
-    t.decimal    :rotate_x, :size => [2, 1], :default => 0.0, :null => false
-    t.decimal    :rotate_y, :size => [2, 1], :default => 0.0, :null => false
-    t.decimal    :rotate_z, :size => [2, 1], :default => 1.0, :null => false
-    t.decimal    :translate_x, :size => [2, 1], :default => 0.0
-    t.decimal    :translate_y, :size => [2, 1], :default => 0.0
-    t.decimal    :translate_z, :size => [2, 1], :default => 0.0
-    t.decimal    :scale, :size => [12, 2], :default => 1.0, :null => false
   end
 
 end
