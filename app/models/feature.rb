@@ -1,4 +1,4 @@
-class Poi < ActiveRecord::Base
+class Feature < ActiveRecord::Base
 
   belongs_to :channel
 

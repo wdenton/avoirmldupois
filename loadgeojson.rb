@@ -3,8 +3,6 @@
 require 'rubygems'
 
 require 'active_record'
-require 'bundler/setup'
-require 'sinatra'
 require 'sqlite3'
 require 'yaml'
 
@@ -23,18 +21,23 @@ end
 
 geojson_files.each do |geojson_file|
 
+  channel_name = File.basename(geojson_file, ".geojson")
+
+  puts "Creating #{channel_name} ..."
+
   geo = JSON.parse(File.read(geojson_file))
 
-  geo["features"].each do |f|
-    name = f["properties"]["Name"]
-    description = f["properties"]["description"]
-    geometry_type = f["geometry"]["type"]
-    (geometry_longitude, geometry_latitude) = f["geometry"]["coordinates"][0], f["geometry"]["coordinates"][1]
+  channel = Channel.find_or_create_by(name: channel_name)
 
-    STDERR.puts "(#{name}, #{description}, #{geometry_type}, #{geometry_latitude}, #{geometry_latitude}, #{geometry_longitude})"
-
-    # db.execute "insert into features (name, description, geometry_type, geometry_latitude, geometry_longitude) values (?, ?, ?, ?, ?)", [name, description, geometry_type, geometry_latitude, geometry_longitude]
-
+  geo['features'].each do |f|
+    puts f['properties']['Name']
+    feature = Feature.create(
+      :name             => f['properties']['Name'],
+      :description      => f['properties']['description'],
+      :latitude         => f['geometry']['coordinates'][1].to_f,
+      :longitude        => f['geometry']['coordinates'][0].to_f,
+    )
+    channel.features << feature
   end
 
 end
