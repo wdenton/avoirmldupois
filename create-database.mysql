@@ -1,9 +1,0 @@
-# Development database
-create database avoirmldupois_dev;
-create user 'avoirmldupois'@'localhost' identified by 'pois';
-grant all privileges on avoirmldupois_dev.* to 'avoirmldupois'@'localhost';
-
-# Uncommnt this when seting up production database. But change the password!
-# create database avoirmldupois;
-# create user 'avoirmldupois'@'localhost' identified by 'pois';
-# grant all privileges on avoirmldupois.* to 'avoirmldupois'@'localhost';

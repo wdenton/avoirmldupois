@@ -18,48 +18,17 @@
 # Copyright 2012, 2013, 2014, 2015 William Denton
 
 require 'rubygems'
-require 'bundler/setup'
-
-require 'sinatra'
-# require 'nokogiri'
-# require 'open-uri'
-
-# require 'data_mapper'
 
 require 'active_record'
-require 'mysql2'
+require 'bundler/setup'
+require 'sinatra'
+require 'sqlite3'
 require 'yaml'
 
 dbconfig = YAML::load(File.open('config/database.yml'))[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
 ActiveRecord::Base.establish_connection(dbconfig)
 
 Dir.glob('./app/models/*.rb').each { |r| require r }
-
-# URL being called looks like this:
-#
-# http://www.miskatonic.org/ar/york.php?
-# lang=en
-# & countryCode=CA
-# & userId=6f85d06929d160a7c8a3cc1ab4b54b87db99f74b
-# & lon=-79.503089
-# & version=6.0
-# & radius=1500
-# & lat=43.7731464
-# & layerName=yorkuniversitytoronto
-# & accuracy=100
-
-# Mandatory params passed in:
-# userId
-# layerName
-# version
-# lat
-# lon
-# countryCode
-# lang
-# action
-#
-# Optional but important (what if no radius is specified?)
-# radius
 
 before do
   # Make this the default
@@ -178,44 +147,43 @@ get "/" do
     end
 
     features << feature
+
+    if features.length == 0
+      errorcode = 21
+      errorstring = "No results found.  Try adjusting your search range and any filters."
+      # TODO Make error message customizable?
+    end
+
+    response = {
+      "arml" => {
+        "ARElements" => [
+          # "channel"           => channel.name,
+          # "showMessage"     => channel.showMessage, # + " (#{ENV['RACK_ENV']})",
+          # "refreshDistance" => channel.refreshDistance,
+          # "refreshInterval" => channel.refreshInterval,
+          features
+          # "errorCode"       => errorcode,
+          # "errorString"     => errorstring,
+        ]
+      }
+    }
+
+  else # The requested channel is not known, so return an error
+
+    errorstring = "Where do error messages go?"
+
+    response = {
+      "arml" => {
+        "channel"   => params[:channelName],
+        "error"     => errorstring,
+      }
+    }
+
+    logger.error errorstring
+
   end
 
-  if features.length == 0
-    errorcode = 21
-    errorstring = "No results found.  Try adjusting your search range and any filters."
-    # TODO Make error message customizable?
-  end
-
-  response = {
-    "arml" => {
-      "ARElements" => [
-        # "channel"           => channel.name,
-        # "showMessage"     => channel.showMessage, # + " (#{ENV['RACK_ENV']})",
-        # "refreshDistance" => channel.refreshDistance,
-        # "refreshInterval" => channel.refreshInterval,
-        features
-        # "errorCode"       => errorcode,
-        # "errorString"     => errorstring,
-      ]
-    }
-  }
-
-else # The requested channel is not known, so return an error
-
-  errorstring = "Where do error messages go?"
-
-  response = {
-    "arml" => {
-      "channel"   => params[:channelName],
-      "error"     => errorstring,
-    }
-  }
-
-  logger.error errorstring
-
-end
-
-response.to_json
+  response.to_json
 
 end
 

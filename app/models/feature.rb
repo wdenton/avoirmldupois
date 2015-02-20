@@ -1,26 +1,6 @@
 class Poi < ActiveRecord::Base
-  belongs_to :layer
-  has_one    :icon, :dependent => :destroy
-  has_many   :actions, :dependent => :destroy
-  has_one    :ubject, :dependent => :destroy
-  has_one    :transform, :dependent => :destroy
-  has_and_belongs_to_many :checkboxes
 
-  # This method lets us use the checkbox filter.
-  # If an array of checkbox option values from Layer is passed in,
-  # this will return all the POIs that match.  If the array is empty,
-  # it will return all POIs.  Hence this method can always be used,
-  # and it will only take effect when needed.  (Though if you're not
-  # using the checkbox filter at all, you can leave it out.)
-  def self.checkboxed(checkmarks)
-    if checkmarks.empty?
-      return all
-    else
-      joins("INNER JOIN checkboxes c, checkboxes_pois c_p").where("c_p.poi_id = pois.id AND c_p.checkbox_id = c.id AND c.option_value IN (?)", checkmarks)
-      # Without a GROUP BY the same POI will be return more than once if it matches more than one checkmark.  This is handled by the group(:id)
-      # filter when this method is called.
-    end
-  end
+  belongs_to :channel
 
   def within_radius(latitude, longitude, radius)
     distance(latitude, longitude) <= radius
