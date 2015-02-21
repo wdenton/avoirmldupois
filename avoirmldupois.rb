@@ -21,6 +21,8 @@ require 'rubygems'
 
 require 'active_record'
 require 'bundler/setup'
+require 'haversine'
+require 'ox'
 require 'sinatra'
 require 'sqlite3'
 require 'yaml'
@@ -35,23 +37,24 @@ before do
   content_type 'application/json'
 end
 
-get "/" do
+get "/:channel" do
 
-  # Error handling.
-  # Status 0 indicates success. Change to number in range 20-29 if there's a problem.
-  errorcode = 0
-  errorstring = "ok"
+  # Mandatory params passed in:
+  # channel
+  # lat
+  # lon
+  # radius
+  # format
 
-  # See https://www.layar.com/documentation/browser/api/getpois-request/
-  # for documentation on the GetPOIs request that is being handled here.
+  STDERR.puts params
+  puts "Hello"
 
-  channel = Channel.find_by name: params[:channelName]
+  channel = Channel.find_by name: params[:channel]
 
   if channel
 
     logger.debug "Found channel #{channel.name}"
     logger.debug channel
-    logger.debug channel.elements
 
     latitude  = params[:lat].to_f
     longitude = params[:lon].to_f
@@ -62,96 +65,34 @@ get "/" do
     logger.debug "Longitude: #{longitude}"
     logger.debug "Radius: #{radius}"
 
-    # Find all of the ELEMENTs in range in this channel.
-    #
-    # There's a slightly ugly SQL statement here that's used with a
-    # find_by_sql statement because we can't use the ActiveRecord methods
-    # to do exactly what we want: determining the distances between the
-    # user and the ELEMENTs.  We need to use the Haversine formula for this.
-    # In the SQL statement we do a calculation (thanks to MySQL having all
-    # of this built in) and then assign that number to the variable
-    # distance, then select and sort based on distance.  It would be nice
-    # if we could use ActiveRecord normally to do this, with some sort of
-    # class method on Element, but we can't, because there's no way to get
-    # "as" into the statement.
-    #
-    # If we didn't need to bother so much about distance, we could just do
-    # a query like this:
-    #
-    # @channel.elements.group(:id).checkboxed(checkmarks).each do |element|
-    #   next unless element.within_radius(latitude, longitude, radius)
-    #   puts element.title
-    # end
-    #
-    # That works fine.  See element.rb for the checkboxed method, with uses
-    # ActiveRecord's join and where commands to control the SQL the way we
-    # want.
-    #
-    # If there really is some way to say
-    # @channel.elements.group(:id).within_range(latitude, longitude, radius)
-    # then we definitely want to use it.
+    # No distance calculation bulit in, so this will be slow.
 
-    # Note re tests: make sure the id numbers returned are unique.
-    # Not specifying IDs from the elements table will lead to trouble.
+    logger.debug "Found #{channel.features.size} features"
 
-    sql = "SELECT p.*,
- (((acos(sin((? * pi() / 180)) * sin((lat * pi() / 180)) +  cos((? * pi() / 180)) * cos((lat * pi() / 180)) * cos((? - lon) * pi() / 180))) * 180 / pi())* 60 * 1.1515 * 1.609344 * 1000) AS distance
- FROM  elements p
- WHERE p.channel_id = ?
- GROUP BY p.id
- HAVING distance < ?
- ORDER BY distance asc" # "
-    elements = Element.find_by_sql([sql, latitude, latitude, longitude, channel.id, radius])
+    features = []
 
-    logger.debug "Found #{elements.size} ELEMENTs"
+    channel.features.each do |f|
 
-    elements.each do |element|
-      # TODO: Add paging through >50 results.
-      # STDERR.puts element.title
+      # logger.debug Haversine.distance(f.latitude, f.longitude, latitude, longitude).to_meters
+
+      next if Haversine.distance(f.latitude, f.longitude, latitude, longitude).to_meters > radius
+
       feature = Hash.new
-      feature["id"] = element.id
+      feature["id"] = f.id
       feature["text"] = {
-        "name"       => element.name,
-        "description" => element.description,
-        "footnote"    => element.footnote
+        "name"       => f.name,
+        "description" => f.description,
       }
-      feature["anchors"]         = {"geolocation" => {"lat" => element.lat, "lon" => element.lon}}
-      feature["imageURL"]       = element.imageURL
-      feature["biwStyle"]       = element.biwStyle
-      feature["showSmallBiw"]   = element.showSmallBiw
-      feature["showBiwOnClick"] = element.showBiwOnClick
+      feature["anchors"]  = {"geolocation" => {"lat" => f.latitude, "lon" => f.longitude}}
 
-      logger.debug "Feature #{element.id}: #{element.title}"
+      logger.debug "Feature #{f.id}: #{f.name}"
 
-      if element.actions
-        feature["actions"] = []
-        element.actions.each do |action|
-          # STDERR.puts action["label"]
-          feature["actions"] << {
-            "uri"          => action.uri,
-            "label"        => action.label,
-            "contentType"  => action.contentType,
-            "activityType" => action.activityType,
-            "method"       => action.method
-          }
-        end
-      end
-
-      if element.icon
-        feature["icon"] = {
-          "url"  => element.icon.url,
-          "type" => element.icon.iconType
-        }
-      end
+      features << feature
 
     end
 
-    features << feature
-
     if features.length == 0
-      errorcode = 21
       errorstring = "No results found.  Try adjusting your search range and any filters."
-      # TODO Make error message customizable?
     end
 
     response = {
@@ -183,7 +124,17 @@ get "/" do
 
   end
 
-  response.to_json
+  if params[:format] == "xml"
+    content_type 'application/xml'
+    doc = Ox::Document.new(:version => '1.0')
+    xml_arml = Ox::Element.new('arml')
+    doc << xml_arml
+    xml_arelements = Ox::Element.new('arelements')
+    xml_arml << xml_arelements
+    Ox.dump(doc)
+  else
+    response.to_json
+  end
 
 end
 

@@ -17,9 +17,11 @@ GEM
     arel (6.0.0)
     builder (3.2.2)
     diff-lcs (1.2.5)
+    haversine (0.3.0)
     i18n (0.7.0)
     json (1.8.2)
     minitest (5.5.1)
+    ox (2.1.8)
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
@@ -51,6 +53,8 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  haversine
+  ox
   rspec
   sinatra
   sqlite3
