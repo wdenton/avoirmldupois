@@ -95,20 +95,6 @@ get "/:channel" do
       errorstring = "No results found.  Try adjusting your search range and any filters."
     end
 
-    response = {
-      "arml" => {
-        "ARElements" => [
-          # "channel"           => channel.name,
-          # "showMessage"     => channel.showMessage, # + " (#{ENV['RACK_ENV']})",
-          # "refreshDistance" => channel.refreshDistance,
-          # "refreshInterval" => channel.refreshInterval,
-          features
-          # "errorCode"       => errorcode,
-          # "errorString"     => errorstring,
-        ]
-      }
-    }
-
   else # The requested channel is not known, so return an error
 
     errorstring = "Where do error messages go?"
@@ -125,15 +111,40 @@ get "/:channel" do
   end
 
   if params[:format] == "xml"
+
     content_type 'application/xml'
+
     doc = Ox::Document.new(:version => '1.0')
     xml_arml = Ox::Element.new('arml')
     doc << xml_arml
     xml_arelements = Ox::Element.new('arelements')
     xml_arml << xml_arelements
+    features.each do |f|
+      xml_feature = Ox::Element.new("feature")
+      xml_feature[:id] = f["id"]
+      xml_feature << (Ox::Element.new("name") << f['text']['name'])
+      xml_feature << (Ox::Element.new("description") << f['text']['description'])
+      xml_arelements << xml_feature
+    end
     Ox.dump(doc)
-  else
+
+  else # Good ol' JSON
+
+    response = {
+      "arml" => {
+        "ARElements" => [
+          # "channel"           => channel.name,
+          # "showMessage"     => channel.showMessage, # + " (#{ENV['RACK_ENV']})",
+          # "refreshDistance" => channel.refreshDistance,
+          # "refreshInterval" => channel.refreshInterval,
+          features
+          # "errorCode"       => errorcode,
+          # "errorString"     => errorstring,
+        ]
+      }
+    }
     response.to_json
+
   end
 
 end
