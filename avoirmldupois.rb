@@ -124,6 +124,14 @@ get "/:channel" do
       xml_feature[:id] = f["id"]
       xml_feature << (Ox::Element.new("name") << f['text']['name'])
       xml_feature << (Ox::Element.new("description") << f['text']['description'])
+      x_anchors = Ox::Element.new("anchors")
+      x_geometry = Ox::Element.new("geometry")
+      x_gml = Ox::Element.new("gml:point")
+      x_gml[:gml_id] = f["id"]
+      x_gml << (Ox::Element.new("gml:pos") << "#{f['anchors']['geolocation']['lat']} #{f['anchors']['geolocation']['lon']}")
+      x_geometry << x_gml
+      x_anchors << x_geometry
+      xml_feature << x_anchors
       xml_arelements << xml_feature
     end
     Ox.dump(doc)
