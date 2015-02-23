@@ -1,4 +1,4 @@
-require './avoirdupois'
+require './avoirmldupois'
 
 # Test task
 require 'rake/testtask'
