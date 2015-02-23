@@ -19,7 +19,7 @@
 
 require 'rubygems'
 require 'active_record'
-require 'sqlite3'
+require 'pg'
 require 'yaml'
 
 this_directory = File.dirname(__FILE__)

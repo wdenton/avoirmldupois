@@ -1,20 +1,25 @@
 development:
-  adapter: mysql2
+  adapter: postgresql
   database: avoirmldupois_dev
+  encoding: unicode
   username: avoirmldupois
-  password: pois
-  host: localhost
+  password: arml
+  pool: 5
+  port: 5433
 
 test:
-  adapter: mysql2
+  adapter: postgresql
   database: avoirmldupois_test
+  encoding: unicode
   username: avoirmldupois
-  password: pois
-  host: localhost
+  password: arml
+  pool: 5
+  port: 5433
 
 production:
-  adapter: mysql2
+  adapter: postgresql
   database: avoirmldupois
+  encoding: unicode
   username: avoirmldupois
-  password: pois
-  hostname: localhost
+  password: arml
+  pool: 5

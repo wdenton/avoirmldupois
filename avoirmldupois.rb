@@ -23,8 +23,8 @@ require 'active_record'
 require 'bundler/setup'
 require 'haversine'
 require 'ox'
+require 'pg'
 require 'sinatra'
-require 'sqlite3'
 require 'yaml'
 
 dbconfig = YAML::load(File.open('config/database.yml'))[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
