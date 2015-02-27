@@ -22,22 +22,27 @@ require 'rubygems'
 require 'active_record'
 require 'bundler/setup'
 require 'erb'
-require 'haversine'
-require 'ox'
-require 'pg'
-require 'sinatra'
+require 'haversine' # https://github.com/kristianmandrup/haversine
+require 'ox' # https://github.com/ohler55/ox
+require 'pg' # https://bitbucket.org/ged/ruby-pg/
+require 'sinatra' # http://www.sinatrarb.com/
+require 'sinatra/activerecord' # https://github.com/janko-m/sinatra-activerecord
 require 'yaml'
 
+# Load database configuration.
+# config/database.yml is automatically loaded and grokked by sinatra/activerecord.
 
 
-# dbconfig = YAML::load(File.open('config/database.yml'))[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
+# Can't just read database.yml, we need to run it through ERB to handle the
+# variable substitution, because this is what Heroku does.
+# https://stackoverflow.com/questions/18139003/
+# dbconfig = YAML.load(ERB.new(File.read(File.join("config","database.yml"))).result)[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
 
-# Can't just read database.yml, we need to run it through ERB to handle the variable substitution.
-# https://stackoverflow.com/questions/18139003/how-to-solve-an-error-in-herokus-config-database-yml-file-mapping-values-are-n
-dbconfig = YAML.load(ERB.new(File.read(File.join("config","database.yml"))).result)[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
 
-ActiveRecord::Base.establish_connection(dbconfig)
 
+# Use ActiveRecord as the object-relation mapper ...
+# best thing going right now, it seems.
+# ActiveRecord::Base.establish_connection(dbconfig)
 Dir.glob('./app/models/*.rb').each { |r| require r }
 
 before do
@@ -47,15 +52,15 @@ end
 
 get "/:channel" do
 
-  # Mandatory params passed in:
-  # channel
+  # The channel name has to be part of the URL.
+  #
+  # Mandatory params passed in as variables:
   # lat
   # lon
   # radius
   # format
 
-  STDERR.puts params
-  puts "Hello"
+  logger.debug "Requested channel #{params[:channel]}"
 
   channel = Channel.find_by name: params[:channel]
 
@@ -73,8 +78,6 @@ get "/:channel" do
     logger.debug "Longitude: #{longitude}"
     logger.debug "Radius: #{radius}"
 
-    # No distance calculation bulit in, so this will be slow.
-
     logger.debug "Found #{channel.features.size} features"
 
     features = []
@@ -83,6 +86,7 @@ get "/:channel" do
 
       # logger.debug Haversine.distance(f.latitude, f.longitude, latitude, longitude).to_meters
 
+      # No distance calculation bulit in, so this will be slow.
       next if Haversine.distance(f.latitude, f.longitude, latitude, longitude).to_meters > radius
 
       feature = Hash.new
@@ -122,6 +126,7 @@ get "/:channel" do
 
     content_type 'application/xml'
 
+    # Cripes, this is ugly.  Must be a more elegant way to do it.
     doc = Ox::Document.new(:version => '1.0')
     xml_arml = Ox::Element.new('arml')
     doc << xml_arml
@@ -167,5 +172,9 @@ end
 
 get "/*" do
   content_type "text/plain"
-  "No parameters specified.  See https://github.com/wdenton/avoirmldupois"
+  Channel.all.each do |c|
+    c.name
+  end
+
+  "No known channel specified.  See https://github.com/wdenton/avoirmldupois"
 end
