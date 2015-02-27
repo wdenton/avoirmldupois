@@ -21,7 +21,7 @@ require 'rubygems'
 
 require 'active_record'
 require 'bundler/setup'
-require 'gem'
+require 'erb'
 require 'haversine'
 require 'ox'
 require 'pg'
