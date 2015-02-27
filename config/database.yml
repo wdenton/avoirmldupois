@@ -19,5 +19,4 @@ test:
 
 production:
   <<: *default
-  # Works on Heroku
   url: <%= ENV['DATABASE_URL'] %>
