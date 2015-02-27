@@ -8,14 +8,14 @@ development:
   database: avoirmldupois_dev
   username: avoirmldupois
   password: arml
-  port: 5433
+  port: 5432
 
 test:
   <<: *default
   database: avoirmldupois_test
   username: avoirmldupois
   password: arml
-  port: 5433
+  port: 5432
 
 production:
   <<: *default
