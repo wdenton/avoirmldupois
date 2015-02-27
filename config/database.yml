@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
+  database: avoirmldupois_dev
+  username: avoirmldupois
+  password: arml
+  port: 5433
+
+test:
+  <<: *default
+  database: avoirmldupois_test
+  username: avoirmldupois
+  password: arml
+  port: 5433
+
+production:
+  <<: *default
+  # Works on Heroku
+  url: <%= ENV['DATABASE_URL'] %>
