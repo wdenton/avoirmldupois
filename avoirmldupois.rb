@@ -21,13 +21,21 @@ require 'rubygems'
 
 require 'active_record'
 require 'bundler/setup'
+require 'gem'
 require 'haversine'
 require 'ox'
 require 'pg'
 require 'sinatra'
 require 'yaml'
 
-dbconfig = YAML::load(File.open('config/database.yml'))[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
+
+
+# dbconfig = YAML::load(File.open('config/database.yml'))[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
+
+# Can't just read database.yml, we need to run it through ERB to handle the variable substitution.
+# https://stackoverflow.com/questions/18139003/how-to-solve-an-error-in-herokus-config-database-yml-file-mapping-values-are-n
+dbconfig = YAML.load(ERB.new(File.read(File.join("config","database.yml"))).result)[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
+
 ActiveRecord::Base.establish_connection(dbconfig)
 
 Dir.glob('./app/models/*.rb').each { |r| require r }
