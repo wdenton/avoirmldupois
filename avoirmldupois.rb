@@ -58,9 +58,12 @@ get "/:channel" do
 
   logger.debug "Requested channel #{params[:channel]}"
 
-  channel = Channel.find_by name: params[:channel]
+  begin
+    channel = Channel.find_by name: params[:channel]
 
-  if channel
+    # Just testing "if channel" threw all kinds of errors if the
+    # channel didn't exist, so wrap this in a begin/rescue to catch
+    # such errors. Must be a cleaner way to do this.
 
     logger.debug "Found channel #{channel.name}"
 
@@ -103,21 +106,6 @@ get "/:channel" do
       errorstring = "No results found.  Try adjusting your search range and any filters."
     end
 
-  else # The requested channel is not known, so return an error
-
-    errorstring = "Where do error messages go in ARML?"
-
-    response = {
-      "arml" => {
-        "channel"   => params[:channelName],
-        "error"     => errorstring,
-      }
-    }
-
-    logger.error errorstring
-
-  end
-
   if params[:format] == "xml"
 
     content_type 'application/xml'
@@ -155,6 +143,22 @@ get "/:channel" do
         ]
       }
     }
+    response.to_json
+
+  end
+
+  rescue # The requested channel is not known, so return an error
+
+    errorstring = "Where do error messages go in ARML? No such channel is known."
+
+    response = {
+      "arml" => {
+        "channel"   => params[:channel],
+        "error"     => errorstring,
+      }
+    }
+
+    logger.error errorstring
     response.to_json
 
   end
