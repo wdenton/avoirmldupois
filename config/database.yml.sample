@@ -1,25 +1,22 @@
-development:
+default: &default
   adapter: postgresql
-  database: avoirmldupois_dev
   encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
+  database: avoirmldupois_dev
   username: avoirmldupois
   password: arml
-  pool: 5
-  port: 5433
+  port: 5432
 
 test:
-  adapter: postgresql
+  <<: *default
   database: avoirmldupois_test
-  encoding: unicode
   username: avoirmldupois
   password: arml
-  pool: 5
-  port: 5433
+  port: 5432
 
 production:
-  adapter: postgresql
-  database: avoirmldupois
-  encoding: unicode
-  username: avoirmldupois
-  password: arml
-  pool: 5
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
