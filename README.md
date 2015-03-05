@@ -47,15 +47,13 @@ Before going any further you need to set up the databases AvoiRMLdupois will use
 
 You must use PostgreSQL.  Assuming it is installed, run these commands:
 
-    # sudo -u postgres createdb avoirmldupois_dev
-    # sudo -u postgres psql --command "CREATE DATABASE avoirmldupois_dev;"
     # sudo -u postgres psql --command "CREATE ROLE avoirmldupois LOGIN PASSWORD 'arml';"
-    # sudo -u postgres psql --command "ALTER DATABASE avoirmldupois_dev OWNER to avoirmldupois;"
-    # sudo -u postgres psql --command "GRANT ALL PRIVILEGES ON DATABASE avoirmldupois_dev TO avoirmldupois;"
+	# sudo -u postgres psql --command "ALTER USER avoirmldupois CREATEDB;"
 
 Then
 
-	# rake db:migrate
+    # rake db:create
+    # rake db:migrate
 
 ### Running the web service (out of date)
 
@@ -72,9 +70,9 @@ You should now see a message like this:
 
 Good! This means that the web service is running on your machine on port 9292.  You can now test it by pretending you're at (-79.39717, 43.66789), the corner of Bloor and Bedford in Toronto, midway between three of the sample POIs. Hit it on the command line (from another shell) like so, or visit the URL directly in a browser:
 
-    $ curl "http://localhost:9292/?layerName=sample&lon=-79.39717&lat=43.66789&version=6.2&radius=1000"
+    $ curl "http://localhost:9292/sample&lon=-79.39717&lat=43.66789&radius=1000"
 
-You'll get an error because there is no such layer 'sample' yet:
+You'll get an error because there is no such layer 'sample':
 
     {
       "errorCode": 22,
