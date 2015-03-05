@@ -38,22 +38,25 @@ To install AvoiRMLdupois you need to get this source code by either forking this
     $ git clone git@github.com:wdenton/avoirmldupois.git
     $ cd avoirmldupois
     $ ls
+	$ bundle install
 
 ### Setting up databases
 
 Before going any further you need to set up the databases AvoiRMLdupois will use.  The configuration details are in [config/database.yml](config/database.yml).
 
-	# cp config/database.yml.sample config/database.yml
+	$ cp config/database.yml.sample config/database.yml
 
 You must use PostgreSQL.  Assuming it is installed, run these commands:
 
-    # sudo -u postgres psql --command "CREATE ROLE avoirmldupois LOGIN PASSWORD 'arml';"
-	# sudo -u postgres psql --command "ALTER USER avoirmldupois CREATEDB;"
+    $ sudo -u postgres psql --command "CREATE ROLE avoirmldupois LOGIN PASSWORD 'arml';"
+	$ sudo -u postgres psql --command "ALTER USER avoirmldupois CREATEDB;"
 
 Then
 
-    # rake db:create
-    # rake db:migrate
+    # bundle exec rake db:create
+    # bundle exec rake db:migrate
+
+(If you are using RVM then you may be able to leave out "bundle exec" on those.)
 
 ### Running the web service (out of date)
 
