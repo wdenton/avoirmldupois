@@ -29,20 +29,14 @@ require 'sinatra' # http://www.sinatrarb.com/
 require 'sinatra/activerecord' # https://github.com/janko-m/sinatra-activerecord
 require 'yaml'
 
-# Load database configuration.
-# config/database.yml is automatically loaded and grokked by sinatra/activerecord.
-
-
-# Can't just read database.yml, we need to run it through ERB to handle the
-# variable substitution, because this is what Heroku does.
-# https://stackoverflow.com/questions/18139003/
-# dbconfig = YAML.load(ERB.new(File.read(File.join("config","database.yml"))).result)[ENV['RACK_ENV'] ? ENV['RACK_ENV'] : 'development']
-
-
-
-# Use ActiveRecord as the object-relation mapper ...
+# Note: use ActiveRecord as the object-relation mapper ...
 # best thing going right now, it seems.
-# ActiveRecord::Base.establish_connection(dbconfig)
+#
+# Also, it means we can use sinatra/activerecord, which does
+# some nice magic, like automatically loading and grokking
+# config/database.yml, even on Heroku.
+
+# Set up models for POIs, features, etc.
 Dir.glob('./app/models/*.rb').each { |r| require r }
 
 before do
@@ -58,6 +52,8 @@ get "/:channel" do
   # lat
   # lon
   # radius
+  #
+  # Optional:
   # format
 
   logger.debug "Requested channel #{params[:channel]}"
@@ -67,7 +63,6 @@ get "/:channel" do
   if channel
 
     logger.debug "Found channel #{channel.name}"
-    logger.debug channel
 
     latitude  = params[:lat].to_f
     longitude = params[:lon].to_f
@@ -87,6 +82,7 @@ get "/:channel" do
       # logger.debug Haversine.distance(f.latitude, f.longitude, latitude, longitude).to_meters
 
       # No distance calculation bulit in, so this will be slow.
+      # TODO: Use spatial features of Postgres to do this inside the database.
       next if Haversine.distance(f.latitude, f.longitude, latitude, longitude).to_meters > radius
 
       feature = Hash.new
@@ -109,7 +105,7 @@ get "/:channel" do
 
   else # The requested channel is not known, so return an error
 
-    errorstring = "Where do error messages go?"
+    errorstring = "Where do error messages go in ARML?"
 
     response = {
       "arml" => {
@@ -126,7 +122,8 @@ get "/:channel" do
 
     content_type 'application/xml'
 
-    # Cripes, this is ugly.  Must be a more elegant way to do it.
+    # This is really ugly.  Why did I use Ox?
+    # TODO: Use Nokogiri.
     doc = Ox::Document.new(:version => '1.0')
     xml_arml = Ox::Element.new('arml')
     doc << xml_arml
@@ -154,13 +151,7 @@ get "/:channel" do
     response = {
       "arml" => {
         "ARElements" => [
-          # "channel"           => channel.name,
-          # "showMessage"     => channel.showMessage, # + " (#{ENV['RACK_ENV']})",
-          # "refreshDistance" => channel.refreshDistance,
-          # "refreshInterval" => channel.refreshInterval,
           features
-          # "errorCode"       => errorcode,
-          # "errorString"     => errorstring,
         ]
       }
     }
@@ -172,9 +163,5 @@ end
 
 get "/*" do
   content_type "text/plain"
-  Channel.all.each do |c|
-    c.name
-  end
-
   "No known channel specified.  See https://github.com/wdenton/avoirmldupois"
 end
