@@ -4,7 +4,6 @@ require 'rubygems'
 
 require 'active_record'
 require 'open-uri'
-require 'sqlite3'
 require 'uri'
 require 'yaml'
 
