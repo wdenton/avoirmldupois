@@ -4,6 +4,7 @@ require 'rubygems'
 
 require 'active_record'
 require 'open-uri'
+require 'sinatra/activerecord' # https://github.com/janko-m/sinatra-activerecord
 require 'uri'
 require 'yaml'
 
