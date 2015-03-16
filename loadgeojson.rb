@@ -3,7 +3,9 @@
 require 'rubygems'
 
 require 'active_record'
+require 'open-uri'
 require 'sqlite3'
+require 'uri'
 require 'yaml'
 
 this_directory = File.dirname(__FILE__)
@@ -21,12 +23,23 @@ end
 
 geojson_files.each do |geojson_file|
 
-  channel_name = File.basename(geojson_file, ".geojson")
+  geo = {}
+  channel_name = ""
+  if /^http/.match(geojson_file)
+    open(geojson_file) do |f|
+      unless f.status[0] == '200'
+        puts "Cannot open #{geojson_file}"
+      else
+        geo = JSON.parse(f.read)
+      end
+      channel_name = File.basename(URI.parse(geojson_file).path, ".geojson")
+    end
+  else
+    geo = JSON.parse(File.read(geojson_file))
+    channel_name = File.basename(geojson_file, ".geojson")
+  end
 
   puts "Creating #{channel_name} ..."
-
-  geo = JSON.parse(File.read(geojson_file))
-
   channel = Channel.find_or_create_by(name: channel_name)
 
   geo['features'].each do |f|
